@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Песенник</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogItCf0LXRgdC10L3QvdC40LoiLCAic2hvcnRfbmFtZSI6ICLQn9C10YHQtdC90L3QuNC6IiwgInN0YXJ0X3VybCI6ICIuL3Nvbmdib29rLmh0bWwiLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgImJhY2tncm91bmRfY29sb3IiOiAiI2ZkZmJmNyIsICJ0aGVtZV9jb2xvciI6ICIjOGI0NTEzIn0=">
 <style>
 :root {
   --bg: #fdfbf7;
@@ -1320,6 +1321,14 @@ noscript .noscript-box .hint {
     }
   } catch(e) {
     _debug('Bootstrap failed: ' + e.message);
+  }
+
+  // === SERVICE WORKER (PWA offline) ===
+  if ('serviceWorker' in navigator) {
+    var _swCode = "self.addEventListener('install',function(e){e.waitUntil(caches.open('songbook-v1').then(function(c){return c.addAll(['./songbook.html']);}));self.skipWaiting();});self.addEventListener('activate',function(e){e.waitUntil(self.clients.claim());});self.addEventListener('fetch',function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request);}));});";
+    var _swBlob = new Blob([_swCode], {type: 'application/javascript'});
+    var _swUrl = URL.createObjectURL(_swBlob);
+    navigator.serviceWorker.register(_swUrl).catch(function(){});
   }
 })();
 </script>
